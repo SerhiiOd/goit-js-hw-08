@@ -1,15 +1,19 @@
-const refs = {
-  form: document.querySelector('.feedback-form'),
-  textarea: document.querySelector('.feedback- form textarea'),
-};
+import throttle from 'lodash.throttle';
+const STORAGE_KEY = 'feedback-form-state';
+const form = document.querySelector('.feedback-form');
 
-refs.form.addEventListener('submit', onFormSubmit);
-refs.textarea.addEventListener('input', onTextareaInput);
+form.addEventListener('input', throttle(onInputChange, 500));
+form.addEventListener('submit', onBtnSubmitClick);
 
-function onFormSubmit(e) {}
+checkStorageContent();
 
-function onTextareaInput(e) {
-  const message = e.currentTurget.value;
+function onInputChange(e) {
+  const feedbackForm = {
+    email: form.email.value,
+    message: form.message.value,
+  };
 
-  localStorage.setItem('feedback-msg', message);
+  const feedbackFormJSON = JSON.stringify(feedbackForm);
+
+  localStorage.setItem(STORAGE_KEY, feedbackFormJSON);
 }
